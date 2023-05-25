@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import static com.example.demo.config.BaseResponseStatus.*;
 
+import java.util.List;
+
 /**
  * Service란?
  * Controller에 의해 호출되어 실제 비즈니스 로직과 트랜잭션을 처리: Create, Update, Delete 의 로직 처리
@@ -56,13 +58,8 @@ public class UserService {
         }
         try {
             int userIdx = userDao.createUser(postUserReq);
-            return new PostUserRes(userIdx);
-
-//  *********** 해당 부분은 7주차 수업 후 주석해제하서 대체해서 사용해주세요! ***********
-//            //jwt 발급.
-//            String jwt = jwtService.createJwt(userIdx);
-//            return new PostUserRes(jwt,userIdx);
-//  *********************************************************************
+           String jwt = jwtService.createJwt(userIdx);
+           return new PostUserRes(userIdx, jwt);
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
             throw new BaseException(DATABASE_ERROR);
         }
@@ -76,6 +73,15 @@ public class UserService {
                 throw new BaseException(MODIFY_FAIL_USERNAME);
             }
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetUserMyPageRes> getCompany(int userIdx) throws BaseException {
+        try {
+            List<GetUserMyPageRes> getUserMyPageRes = userDao.getCompany(userIdx);
+            return getUserMyPageRes;
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

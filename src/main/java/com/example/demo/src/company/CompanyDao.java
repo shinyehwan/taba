@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.src.company.model.GetCompanyRes;
-import com.example.demo.src.user.model.GetUserRes;
+import com.example.demo.src.user.model.GetUserMyPageRes;
 
 @Repository
 public class CompanyDao {
@@ -18,14 +17,16 @@ public class CompanyDao {
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
-	public List<GetCompanyRes> getCompany(int companyIdx) {
-		String getCompanyQuery = "select * from Company where companyIdx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
-		int getCompanyParams = companyIdx;
+	public List<GetUserMyPageRes> getCompany(int userIdx) {
+		String getCompanyQuery = "select companyName, page, days, UserCompany.createdAt, UserCompany.updatedAt\n"
+			+ "from User, UserCompany, Company\n"
+			+ "where User.userIdx = UserCompany.userIdx and\n"
+			+ "      UserCompany.companyIdx = Company.companyIdx and\n"
+			+ "      User.userIdx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+		int getCompanyParams = userIdx;
 		return this.jdbcTemplate.query(getCompanyQuery,
-			(rs, rowNum) -> new GetCompanyRes(
-				rs.getInt("companyIdx"),
+			(rs, rowNum) -> new GetUserMyPageRes(
 				rs.getString("companyName"),
-				rs.getString("companyUrl"),
 				rs.getInt("page"),
 				rs.getInt("days"),
 				rs.getString("created_at"),

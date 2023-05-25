@@ -137,4 +137,24 @@ public class UserDao {
                         rs.getString("password")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
+
+    public List<GetUserMyPageRes> getCompany(int userIdx) {
+        String getCompanyQuery = "select companyName, page, days, Search.createdAt, Search.updatedAt\n"
+            + "from User, Search, Company\n"
+            + "where User.userIdx = Search.userIdx and\n"
+            + "      Company.companyIdx = Search.companyIdx and\n"
+            + "      User.userIdx = ?\n"
+            + "\n";
+        int getCompanyParams = userIdx;
+        return this.jdbcTemplate.query(getCompanyQuery,
+            (rs, rowNum) -> new GetUserMyPageRes(
+                rs.getString("companyName"),
+                rs.getInt("page"),
+                rs.getInt("days"),
+                rs.getString("createdAt"),
+                rs.getString("updatedAt")
+            ),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+            getCompanyParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+    }
+
 }

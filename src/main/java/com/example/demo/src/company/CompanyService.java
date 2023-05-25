@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.company.model.GetCompanyRes;
+import com.example.demo.src.user.model.GetUserMyPageRes;
 import com.example.demo.utils.JwtService;
 
 @Service
@@ -22,10 +22,10 @@ public class CompanyService {
 		this.jwtService = jwtService;
 	}
 
-	public List<GetCompanyRes> getCompany(int companyIdx) throws BaseException {
+	public List<GetUserMyPageRes> getCompany(int userIdx) throws BaseException {
 		try {
-			List<GetCompanyRes> getCompanyRes = companyDao.getCompany(companyIdx);
-			return getCompanyRes;
+			List<GetUserMyPageRes> getUserMyPageRes = companyDao.getCompany(userIdx);
+			return getUserMyPageRes;
 		} catch (Exception exception) {
 			throw new BaseException(DATABASE_ERROR);
 		}
