@@ -116,6 +116,57 @@ public class UserController {
 
     }
 
+    /**
+     * 검색하기 기능
+     * @param userIdx
+     * @param postSearchReq
+     * @return
+     */
+
+    @ResponseBody
+    @PostMapping("/{userIdx}/search")
+    public BaseResponse<PostSearchRes> postSearchInfo(
+        @PathVariable("userIdx") Integer userIdx,
+        @RequestBody PostSearchReq postSearchReq
+    ) {
+        try {
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if( userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            PostSearchRes postSearchRes = userService.postSearchInfo(userIdx, postSearchReq);
+            return new BaseResponse<>(postSearchRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 결과 화면 보여주기
+     * @param userIdx
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/{userIdx}/search")
+    public BaseResponse<GetSearchRes> getSearchInfo(
+        @PathVariable("userIdx") Integer userIdx) {
+        try {
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if( userIdx != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetSearchRes getSearchRes = userService.getSearchInfo(userIdx);
+            return new BaseResponse<>(getSearchRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
     // /**
     //  * 모든 회원들의  조회 API
     //  * [GET] /users

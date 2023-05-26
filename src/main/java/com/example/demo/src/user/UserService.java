@@ -85,4 +85,23 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetSearchRes getSearchInfo(Integer userIdx) throws BaseException {
+        try {
+            GetSearchRes getSearchRes = userDao.getSearchInfo(userIdx);
+            return getSearchRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostSearchRes postSearchInfo(Integer userIdx, PostSearchReq postSearchReq) throws BaseException {
+        try {
+            userDao.postSearchInfo(userIdx, postSearchReq);
+            String message = "데이터를 분석하고 있어요!";
+            return new PostSearchRes(message);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -157,4 +157,28 @@ public class UserDao {
             getCompanyParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
+    public GetSearchRes getSearchInfo(int userIdx) {
+        String getSearchQuery = "select Result.companyIdx, Company.companyName, Result.img1, Result.img2\n"
+            + "from User, UserCompany, Company, Result\n"
+            + "where User.userIdx = UserCompany.userIdx and\n"
+            + "      UserCompany.companyIdx = Company.companyIdx and\n"
+            + "      Company.companyIdx = Result.companyIdx and\n"
+            + "      User.userIdx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        int getUserParams = userIdx;
+        return this.jdbcTemplate.queryForObject(getSearchQuery,
+            (rs, rowNum) -> new GetSearchRes(
+                rs.getInt("companyIdx"),
+                rs.getString("companyName"),
+                rs.getString("img1"),
+                rs.getString("img2")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+            getUserParams);
+    }
+
+    public int postSearchInfo(Integer userIdx, PostSearchReq postSearchReq) {
+        String Query = "insert into Search (userIdx, companyIdx, page, days) values (?, (select companyIdx\n"
+            + "from Company\n"
+            + "where companyName = ?), ?, ?)";
+        Object[] Params = new Object[]{userIdx, postSearchReq.getCompanyName(), postSearchReq.getPage(), postSearchReq.getDays()}; // 동적 쿼리의 ?부분에 주입될 값
+        return this.jdbcTemplate.update(Query, Params);
+    }
 }
