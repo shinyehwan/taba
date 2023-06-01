@@ -7,6 +7,8 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.GetUserMyPageRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
+import com.fasterxml.jackson.databind.ser.Serializers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +94,9 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+
+
     /**
      * 마이페이지
      * @param userIdx
