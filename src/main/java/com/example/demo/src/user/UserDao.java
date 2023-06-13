@@ -176,7 +176,11 @@ public class UserDao {
             + "  and Search.userIdx = User.userIdx\n"
             + "  and Result.userIdx = User.userIdx\n"
             + "  and Result.companyIdx = Company.companyIdx\n"
-            + "  and Search.userIdx = ?;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+            + "  and Search.userIdx = ?"
+            + "  and Search.companyIdx = (SELECT Search.companyIdx FROM Search\n"
+            + "WHERE Search.userIdx = ?\n"
+            + "ORDER BY createdAt DESC\n"
+            + "LIMIT 1);"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = userIdx;
         return this.jdbcTemplate.query(getSearchQuery,
             (rs, rowNum) -> new GetSearchRes(
@@ -191,7 +195,7 @@ public class UserDao {
                 rs.getString("img1"),
                 rs.getString("img2")
             ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-            getUserParams);
+            getUserParams, getUserParams);
     }
 
     public int postSearchInfo(Integer userIdx, PostSearchReq postSearchReq) {

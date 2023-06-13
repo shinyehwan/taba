@@ -122,7 +122,7 @@ public class UserController {
     }
 
     /**
-     * 검색하기 기능
+     * 검색하기 기능 (Search 테이블에 쌓아 놓기)
      * @param userIdx
      * @param postSearchReq
      * @return
@@ -148,8 +148,10 @@ public class UserController {
         }
     }
 
+
+
     /**
-     * 결과 화면 보여주기
+     * 최근 검색한 결과 화면 보여주기
      * @param userIdx
      * @return
      */
