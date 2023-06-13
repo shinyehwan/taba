@@ -86,7 +86,7 @@ public class UserDao {
 
     // 로그인: 해당 email에 해당되는 user의 암호화된 비밀번호 값을 가져온다.
     public User getPwd(PostLoginReq postLoginReq) {
-        String getPwdQuery = "select userIdx, password,email,nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
+        String getPwdQuery = "select userIdx, email, password, nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
         String getPwdParams = postLoginReq.getEmail(); // 주입될 email값을 클라이언트의 요청에서 주어진 정보를 통해 가져온다.
 
         return this.jdbcTemplate.queryForObject(getPwdQuery,
@@ -139,7 +139,7 @@ public class UserDao {
     }
 
     public List<GetUserMyPageRes> getCompany(int userIdx) {
-        String getCompanyQuery = "select companyName, page, days, Search.createdAt, Search.updatedAt\n"
+        String getCompanyQuery = "select distinct companyName, page, days, Search.createdAt, Search.updatedAt\n"
             + "from User, Search, Company\n"
             + "where User.userIdx = Search.userIdx and\n"
             + "      Company.companyIdx = Search.companyIdx and\n"
@@ -157,25 +157,45 @@ public class UserDao {
             getCompanyParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
-    public GetSearchRes getSearchInfo(int userIdx) {
-        String getSearchQuery = "select Result.companyIdx, Company.companyName, Result.img1, Result.img2\n"
-            + "from User, UserCompany, Company, Result\n"
-            + "where User.userIdx = UserCompany.userIdx and\n"
-            + "      UserCompany.companyIdx = Company.companyIdx and\n"
-            + "      Company.companyIdx = Result.companyIdx and\n"
-            + "      User.userIdx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+    public List<GetSearchRes> getSearchInfo(int userIdx) {
+        String getSearchQuery = "select Result.companyIdx   as companyIdx,\n"
+            + "       Company.companyName as companyName,\n"
+            + "       Company.date        as date,\n"
+            + "       Company.title       as title,\n"
+            + "       Company.link        as link,\n"
+            + "       Company.content     as content,\n"
+            + "       Company.summary     as summary,\n"
+            + "       Company.keyword     as keyword,\n"
+            + "       Result.img1         as img1,\n"
+            + "       Result.img2         as img2\n"
+            + "from User,\n"
+            + "     Company,\n"
+            + "     Search,\n"
+            + "     Result\n"
+            + "where Search.companyIdx = Company.companyIdx\n"
+            + "  and Search.userIdx = User.userIdx\n"
+            + "  and Result.userIdx = User.userIdx\n"
+            + "  and Result.companyIdx = Company.companyIdx\n"
+            + "  and Search.userIdx = ?;"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
         int getUserParams = userIdx;
-        return this.jdbcTemplate.queryForObject(getSearchQuery,
+        return this.jdbcTemplate.query(getSearchQuery,
             (rs, rowNum) -> new GetSearchRes(
                 rs.getInt("companyIdx"),
                 rs.getString("companyName"),
+                rs.getString("date"),
+                rs.getString("title"),
+                rs.getString("link"),
+                rs.getString("content"),
+                rs.getString("summary"),
+                rs.getString("keyword"),
                 rs.getString("img1"),
-                rs.getString("img2")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                rs.getString("img2")
+            ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
             getUserParams);
     }
 
     public int postSearchInfo(Integer userIdx, PostSearchReq postSearchReq) {
-        String Query = "insert into Search (userIdx, companyIdx, page, days) values (?, (select companyIdx\n"
+        String Query = "insert into Search (userIdx, companyIdx, page, days) values (?, (select distinct companyIdx\n"
             + "from Company\n"
             + "where companyName = ?), ?, ?)";
         Object[] Params = new Object[]{userIdx, postSearchReq.getCompanyName(), postSearchReq.getPage(), postSearchReq.getDays()}; // 동적 쿼리의 ?부분에 주입될 값

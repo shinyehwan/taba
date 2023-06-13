@@ -10,6 +10,16 @@ import lombok.Setter;
 public class GetSearchRes {
 	private int companyIdx;
 	private String companyName;
+	private String date;
+	private String title;
+	private String link;
+	private String content;
+	private String summary;
+	private String keyword;
 	private String img1;
 	private String img2;
+
+
+
+
 }

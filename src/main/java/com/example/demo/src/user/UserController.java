@@ -155,7 +155,7 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}/search")
-    public BaseResponse<GetSearchRes> getSearchInfo(
+    public BaseResponse<List<GetSearchRes>> getSearchInfo(
         @PathVariable("userIdx") Integer userIdx) {
         try {
             //jwt에서 idx 추출.
@@ -164,7 +164,7 @@ public class UserController {
             if( userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            GetSearchRes getSearchRes = userService.getSearchInfo(userIdx);
+            List<GetSearchRes> getSearchRes = userService.getSearchInfo(userIdx);
             return new BaseResponse<>(getSearchRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

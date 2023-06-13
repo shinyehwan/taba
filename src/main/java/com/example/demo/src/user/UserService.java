@@ -86,9 +86,9 @@ public class UserService {
         }
     }
 
-    public GetSearchRes getSearchInfo(Integer userIdx) throws BaseException {
+    public List<GetSearchRes> getSearchInfo(Integer userIdx) throws BaseException {
         try {
-            GetSearchRes getSearchRes = userDao.getSearchInfo(userIdx);
+            List<GetSearchRes> getSearchRes = userDao.getSearchInfo(userIdx);
             return getSearchRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
