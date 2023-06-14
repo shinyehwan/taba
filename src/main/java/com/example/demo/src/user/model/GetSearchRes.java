@@ -18,6 +18,7 @@ public class GetSearchRes {
 	private String keyword;
 	private String img1;
 	private String img2;
+	private int percentage;
 
 
 

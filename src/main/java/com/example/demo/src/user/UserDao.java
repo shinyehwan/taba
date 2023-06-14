@@ -167,7 +167,8 @@ public class UserDao {
             + "       Company.summary     as summary,\n"
             + "       Company.keyword     as keyword,\n"
             + "       Result.img1         as img1,\n"
-            + "       Result.img2         as img2\n"
+            + "       Result.img2         as img2,\n"
+            + "       (COUNT(model = 1) / COUNT(model is not null) * 100) as percentage\n"
             + "from User,\n"
             + "     Company,\n"
             + "     Search,\n"
@@ -193,7 +194,8 @@ public class UserDao {
                 rs.getString("summary"),
                 rs.getString("keyword"),
                 rs.getString("img1"),
-                rs.getString("img2")
+                rs.getString("img2"),
+                rs.getInt("percentage")
             ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
             getUserParams, getUserParams);
     }
