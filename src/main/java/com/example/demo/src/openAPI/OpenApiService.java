@@ -9,7 +9,7 @@ public class OpenApiService {
 
 	public String callOpenApi() {
 		RestTemplate restTemplate = new RestTemplate();
-		String apiUrl = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService?serviceKey=YOUR_API_KEY&likeItmsNm=YOUR_QUERY";
+		String apiUrl = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService?serviceKey=5KYbFYzPwjxdKTV1XgxGsTU%2FIG9joJTc8CnTRZyC2mj3c6HrwmglFZpgGQqV0qHnGIBYsO2Or%2BQZAJe0YVvMRA%3D%3D&likeItmsNm=삼성전자";
 		ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 		return response.getBody();
 	}
