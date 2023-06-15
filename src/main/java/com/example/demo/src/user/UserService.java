@@ -96,6 +96,7 @@ public class UserService {
     }
 
     public PostSearchRes postSearchInfo(Integer userIdx, PostSearchReq postSearchReq) throws BaseException {
+        // System.out.println("확인");
         try {
             userDao.postSearchInfo(userIdx, postSearchReq);
             String message = "데이터를 분석하고 있어요!";
